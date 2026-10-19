@@ -33,6 +33,7 @@ jobs:
             --port 8080
         name: start server
         background: true
+        id: server
       - name: wait for server
         run: |
           set -xeuo pipefail
@@ -49,11 +50,12 @@ jobs:
           
           curl http://localhost:8080/v1/chat/completions -H "Content-Type: application/json" -d '{
             "messages": [{"role": "user", "content": [
-              {"type": "text", "text": "What is in this image?"},
-              {"type": "image_url", "image_url": {"url": "https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png"}}
+              {"type": "text", "text": "空がなぜ青いのか三行で教えて?"},
             ]}],
             "chat_template_kwargs": {"enable_thinking": false}
           }'
         name: call
-
+      - name: Stop server
+        if: always()
+        cancel: server
 
