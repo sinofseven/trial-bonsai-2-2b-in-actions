@@ -37,6 +37,7 @@ jobs:
           set -xeuo pipefail
           
           curl "${{ inputs.projector_model_url }}" -o "${{ inputs.projector_model_name }}" -L
+      - run: ls -lh
       - name: Unarchive
         run: |
           set -xeuo pipefail
