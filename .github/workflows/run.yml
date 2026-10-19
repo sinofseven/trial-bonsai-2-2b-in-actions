@@ -31,6 +31,20 @@ jobs:
       - run: |
           set -xeuo pipefail
           
+          sleep 1
+          sleep 1
+          sleep 1
+          sleep 1
+          sleep 1
+          sleep 1
+          sleep 1
+          sleep 1
+          sleep 1
+          sleep 1
+          sleep 1
+      - run: |
+          set -xeuo pipefail
+          
           curl http://localhost:8080/v1/chat/completions -H "Content-Type: application/json" -d '{
             "messages": [{"role": "user", "content": [
               {"type": "text", "text": "What is in this image?"},
