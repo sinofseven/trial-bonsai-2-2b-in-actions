@@ -22,12 +22,20 @@ jobs:
   exec:
     runs-on: ubuntu-24.04
     steps:
-      - name: Download
+      - name: Download BIN
         run: |
           set -xeuo pipefail
           
           curl "${{ env.BIN_URL }}" -o "${{ env.BIN_FILE_NAME }}" -L
+      - name: Download Model
+        run: |
+          set -xeuo pipefail
+          
           curl "${{ inputs.model_url }}" -o "${{ inputs.model_name }}" -L
+      - name: Download Projector Model
+        run: |
+          set -xeuo pipefail
+          
           curl "${{ inputs.projector_model_url }}" -o "${{ inputs.projector_model_name }}" -L
       - name: Unarchive
         run: |
