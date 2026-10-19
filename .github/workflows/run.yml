@@ -27,21 +27,20 @@ jobs:
             -ngl 99 \
             -fa on \
             -c 32768 \
-            --port 8080 &
-      - run: |
+            --port 8080
+        name: start server
+        background: true
+      - name: wait for server
+        run: |
           set -xeuo pipefail
           
-          sleep 1
-          sleep 1
-          sleep 1
-          sleep 1
-          sleep 1
-          sleep 1
-          sleep 1
-          sleep 1
-          sleep 1
-          sleep 1
-          sleep 1
+          for i in {1..60}; do
+            if curl -fsS http://localhost:8080/health; then
+              exit 0
+            fi
+            sleep 2
+          done
+          exit 1
       - run: |
           set -xeuo pipefail
           
