@@ -50,12 +50,11 @@ jobs:
           
           curl http://localhost:8080/v1/chat/completions -H "Content-Type: application/json" -d '{
             "messages": [{"role": "user", "content": [
-              {"type": "text", "text": "空がなぜ青いのか三行で教えて?"},
+              {"type": "text", "text": "空がなぜ青いのか三行で教えて?"}
             ]}],
             "chat_template_kwargs": {"enable_thinking": false}
           }'
         name: call
       - name: Stop server
-        if: always()
         cancel: server
 
