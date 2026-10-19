@@ -26,12 +26,14 @@ jobs:
         run: |
           set -xeuo pipefail
           
-          mkdir bin
-          
           curl "${{ env.BIN_URL }}" -o "${{ env.BIN_FILE_NAME }}" -L
           curl "${{ inputs.model_url }}" -o "${{ inputs.model_name }}" -L
           curl "${{ inputs.projector_model_url }}" -o "${{ inputs.projector_model_name }}" -L
+      - name: Unarchive
+        run: |
+          set -xeuo pipefail
           
+          mkdir bin
           tar -xzf "${{ env.BIN_FILE_NAME }}" -C bin --strip-components=1
       - name: Start Server
         id: server

@@ -27,3 +27,39 @@ jobs:
     with:
       model_url: ${{ needs.prepare.outputs.model_url }}
       projector_model_url: ${{ needs.prepare.outputs.projector_model_url }}
+
+  exec-02:
+    name: Exec 02
+    needs: prepare
+    uses: ./.github/workflows/exec.yml
+    secrets: inherit
+    with:
+      model_url: ${{ needs.prepare.outputs.model_url }}
+      projector_model_url: ${{ needs.prepare.outputs.projector_model_url }}
+
+  exec-03:
+    name: Exec 03
+    needs: prepare
+    uses: ./.github/workflows/exec.yml
+    secrets: inherit
+    with:
+      model_url: ${{ needs.prepare.outputs.model_url }}
+      projector_model_url: ${{ needs.prepare.outputs.projector_model_url }}
+
+  exec-04:
+    name: Exec 04
+    needs: prepare
+    uses: ./.github/workflows/exec.yml
+    secrets: inherit
+    with:
+      model_url: ${{ needs.prepare.outputs.model_url }}
+      projector_model_url: ${{ needs.prepare.outputs.projector_model_url }}
+
+  exec-05:
+    name: Exec 05
+    needs: prepare
+    uses: ./.github/workflows/exec.yml
+    secrets: inherit
+    with:
+      model_url: ${{ needs.prepare.outputs.model_url }}
+      projector_model_url: ${{ needs.prepare.outputs.projector_model_url }}
