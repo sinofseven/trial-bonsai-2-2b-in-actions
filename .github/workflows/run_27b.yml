@@ -7,12 +7,23 @@ env:
   FILE_MODEL: "Ternary-Bonsai-2-27B-PQ2_0.gguf"
   FILE_MMPROJ: "Ternary-Bonsai-2-27B-mmproj-Q8_0.gguf"
 
-jobs: 
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      model_url: ${{ steps.config.outputs.model_url }}
+      projector_model_url: ${{ steps.config.outputs.projector_model_url }}
+    steps:
+      - id: config
+        run: |
+          echo "model_url=$MODEL_URL" >> "$GITHUB_OUTPUT"
+          echo "projector_model_url=$MODEL_02_URL" >> "$GITHUB_OUTPUT"
+  
   exec-01:
     name: Exec 01
+    needs: prepare
     uses: ./.github/workflows/exec.yml
     secrets: inherit
     with:
-      model_url: ${{ env.MODEL_URL }}
-      projector_model_url: ${{ env.MODEL_02_URL }}
-    
+      model_url: ${{ needs.prepare.outputs.model_url }}
+      projector_model_url: ${{ needs.prepare.outputs.projector_model_url }}
