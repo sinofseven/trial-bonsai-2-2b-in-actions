@@ -29,7 +29,7 @@ jobs:
           ./bin/llama-server \
             -m "./${FILE_MODEL}" \
             --mmproj "./${FILE_MMPROJ}" \
-            -ngl 99 \
+            -ngl 0 \
             -fa on \
             -c 32768 \
             --port 8080
