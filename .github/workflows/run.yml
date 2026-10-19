@@ -5,6 +5,8 @@ env:
   BIN_URL: "https://github.com/PrismML-Eng/llama.cpp/releases/download/prism-b10777-e3de715/llama-prism-b10777-e3de715-bin-ubuntu-x64.tar.gz"
   MODEL_URL: "https://huggingface.co/prism-ml/Ternary-Bonsai-2-2B-gguf/resolve/main/Ternary-Bonsai-2-2B-PQ2_0.gguf?download=true"
   MODEL_02_URL: "https://huggingface.co/prism-ml/Ternary-Bonsai-2-2B-gguf/resolve/main/Ternary-Bonsai-2-2B-mmproj-Q8_0.gguf?download=true"
+  FILE_MODEL: "Ternary-Bonsai-2-2B-PQ2_0.gguf"
+  FILE_MMPROJ: "Ternary-Bonsai-2-2B-mmproj-Q8_0.gguf"
 
 jobs: 
   run:
@@ -18,15 +20,15 @@ jobs:
           curl "$BIN_URL" -o data.tar.gz -L
           tar -xzf data.tar.gz -C bin --strip-components=1
           
-          curl "$MODEL_URL" -o "Ternary-Bonsai-2-2B-PQ2_0.gguf" -L
-          curl "$MODEL_02_URL" -o "Ternary-Bonsai-2-2B-mmproj-Q8_0.gguf" -L
+          curl "$MODEL_URL" -o "${FILE_MODEL}" -L
+          curl "$MODEL_02_URL" -o "${FILE_MMPROJ}" -L
         name: download
       - run: |
           set -xeuo pipefail
           
           ./bin/llama-server \
-            -m ./Ternary-Bonsai-2-2B-PQ2_0.gguf \
-            --mmproj ./Ternary-Bonsai-2-2B-mmproj-Q8_0.gguf \
+            -m "./${FILE_MODEL}" \
+            --mmproj "./${FILE_MMPROJ}" \
             -ngl 99 \
             -fa on \
             -c 32768 \
