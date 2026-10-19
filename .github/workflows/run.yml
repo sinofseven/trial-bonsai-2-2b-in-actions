@@ -27,7 +27,7 @@ jobs:
             -ngl 99 \
             -fa on \
             -c 32768 \
-            --port 8080
+            --port 8080 &
       - run: |
           set -xeuo pipefail
           
