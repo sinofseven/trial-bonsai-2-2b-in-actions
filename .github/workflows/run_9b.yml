@@ -1,0 +1,62 @@
+on:
+  push:
+    
+env:
+  BIN_URL: "https://github.com/PrismML-Eng/llama.cpp/releases/download/prism-b10777-e3de715/llama-prism-b10777-e3de715-bin-ubuntu-x64.tar.gz"
+  MODEL_URL: "https://huggingface.co/prism-ml/Ternary-Bonsai-2-9B-gguf/resolve/main/Ternary-Bonsai-2-9B-PQ2_0.gguf?download=true"
+  MODEL_02_URL: "https://huggingface.co/prism-ml/Ternary-Bonsai-2-9B-gguf/resolve/main/Ternary-Bonsai-2-9B-mmproj-Q8_0.gguf?download=true"
+  FILE_MODEL: "Ternary-Bonsai-2-9B-PQ2_0.gguf"
+  FILE_MMPROJ: "Ternary-Bonsai-2-9B-mmproj-Q8_0.gguf"
+
+jobs: 
+  run:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: |
+          set -xeuo pipefail
+          
+          mkdir bin
+          
+          curl "$BIN_URL" -o data.tar.gz -L
+          tar -xzf data.tar.gz -C bin --strip-components=1
+          
+          curl "$MODEL_URL" -o "${FILE_MODEL}" -L
+          curl "$MODEL_02_URL" -o "${FILE_MMPROJ}" -L
+        name: download
+      - run: |
+          set -xeuo pipefail
+          
+          ./bin/llama-server \
+            -m "./${FILE_MODEL}" \
+            --mmproj "./${FILE_MMPROJ}" \
+            -ngl 99 \
+            -fa on \
+            -c 32768 \
+            --port 8080
+        name: start server
+        background: true
+        id: server
+      - name: wait for server
+        run: |
+          set -xeuo pipefail
+          
+          for i in {1..60}; do
+            if curl -fsS http://localhost:8080/health; then
+              exit 0
+            fi
+            sleep 2
+          done
+          exit 1
+      - run: |
+          set -xeuo pipefail
+          
+          curl http://localhost:8080/v1/chat/completions -H "Content-Type: application/json" -d '{
+            "messages": [{"role": "user", "content": [
+              {"type": "text", "text": "空がなぜ青いのか三行で教えて?"}
+            ]}],
+            "chat_template_kwargs": {"enable_thinking": false}
+          }'
+        name: call
+      - name: Stop server
+        cancel: server
+
