@@ -1,0 +1,71 @@
+on:
+  workflow_call: 
+    inputs: 
+      model_url:
+        required: true
+        type: string
+      projector_model_url:
+        required: true
+        type: string
+      model_name:
+        type: string
+        default: RunningModel
+      projector_model_name:
+        type: string
+        default: ProjectorModel
+
+env:
+  BIN_URL: "https://github.com/PrismML-Eng/llama.cpp/releases/download/prism-b10777-e3de715/llama-prism-b10777-e3de715-bin-ubuntu-x64.tar.gz"
+  BIN_FILE_NAME: "data.tar.gz"
+
+jobs:
+  exec:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Download
+        run: |
+          set -xeuo pipefail
+          
+          mkdir bin
+          
+          curl "${{ env.BIN_URL }}" -o "${{ env.BIN_FILE_NAME }}" -L
+          curl "${{ inputs.model_url }}" -o "${{ inputs.model_name }}" -L
+          curl "${{ inputs.projector_model_url }}" -o "${{ inputs.projector_model_name }}" -L
+          
+          tar -xzf "${{ env.BIN_FILE_NAME }}" -C bin --strip-components=1
+      - name: Start Server
+        id: server
+        background: true
+        run: |
+          set -xeuo pipefail
+          
+          ./bin/llama-server \
+            -m "./${{ inputs.model_name }}" \
+            --mmproj "./${{ inputs.projector_model_name }}" \
+            -ngl 0 \
+            -fa on \
+            -c 32768 \
+            --port 8080
+      - name: wait
+        run: |
+          set -xeuo pipefail
+          
+          for i in {1..60}; do
+            if curl -fsS http://localhost:8080/health; then
+              exit 0
+            fi
+            sleep
+          done
+          exit 1
+      - name: call
+        run: |
+          set -xeuo pipefail
+          
+          curl http://localhost:8080/v1/chat/completions -H "Content-Type: application/json" -d '{
+            "messages": [{"role": "user", "content": [
+              {"type": "text", "text": "空がなぜ青いのか三行で教えて?"}
+            ]}],
+            "chat_template_kwargs": {"enable_thinking": false}
+          }'
+      - name: Stop server
+        cancel: server
