@@ -1,65 +1,11 @@
 on:
   push:
-    
-env:
-  MODEL_URL: "https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/resolve/main/Ternary-Bonsai-2-27B-PQ2_0.gguf?download=true"
-  MODEL_02_URL: "https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/resolve/main/Ternary-Bonsai-2-27B-mmproj-Q8_0.gguf?download=true"
-  FILE_MODEL: "Ternary-Bonsai-2-27B-PQ2_0.gguf"
-  FILE_MMPROJ: "Ternary-Bonsai-2-27B-mmproj-Q8_0.gguf"
 
 jobs:
-  prepare:
-    runs-on: ubuntu-latest
-    outputs:
-      model_url: ${{ steps.config.outputs.model_url }}
-      projector_model_url: ${{ steps.config.outputs.projector_model_url }}
-    steps:
-      - id: config
-        run: |
-          echo "model_url=$MODEL_URL" >> "$GITHUB_OUTPUT"
-          echo "projector_model_url=$MODEL_02_URL" >> "$GITHUB_OUTPUT"
-  
-  exec-01:
-    name: Exec 01
-    needs: prepare
+  exec:
+    name: Exec
     uses: ./.github/workflows/exec.yml
     secrets: inherit
     with:
-      model_url: ${{ needs.prepare.outputs.model_url }}
-      projector_model_url: ${{ needs.prepare.outputs.projector_model_url }}
-
-  exec-02:
-    name: Exec 02
-    needs: prepare
-    uses: ./.github/workflows/exec.yml
-    secrets: inherit
-    with:
-      model_url: ${{ needs.prepare.outputs.model_url }}
-      projector_model_url: ${{ needs.prepare.outputs.projector_model_url }}
-
-  exec-03:
-    name: Exec 03
-    needs: prepare
-    uses: ./.github/workflows/exec.yml
-    secrets: inherit
-    with:
-      model_url: ${{ needs.prepare.outputs.model_url }}
-      projector_model_url: ${{ needs.prepare.outputs.projector_model_url }}
-
-  exec-04:
-    name: Exec 04
-    needs: prepare
-    uses: ./.github/workflows/exec.yml
-    secrets: inherit
-    with:
-      model_url: ${{ needs.prepare.outputs.model_url }}
-      projector_model_url: ${{ needs.prepare.outputs.projector_model_url }}
-
-  exec-05:
-    name: Exec 05
-    needs: prepare
-    uses: ./.github/workflows/exec.yml
-    secrets: inherit
-    with:
-      model_url: ${{ needs.prepare.outputs.model_url }}
-      projector_model_url: ${{ needs.prepare.outputs.projector_model_url }}
+      model_url: "https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/resolve/main/Ternary-Bonsai-2-27B-PQ2_0.gguf?download=true"
+      projector_model_url: "https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/resolve/main/Ternary-Bonsai-2-27B-mmproj-Q8_0.gguf?download=true"
