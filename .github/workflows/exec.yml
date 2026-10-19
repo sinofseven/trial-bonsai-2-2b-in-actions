@@ -50,11 +50,12 @@ jobs:
         run: |
           set -xeuo pipefail
           
-          for i in {1..60}; do
+          for i in {1..120}; do
             if curl -fsS http://localhost:8080/health; then
               exit 0
             fi
-            sleep
+            echo -n "$i, "
+            sleep 1
           done
           exit 1
       - name: call
